@@ -278,7 +278,7 @@ func (cp *Pool) IdleClosed() int64 {
 
 func (cp *Pool) isCallerIDAppDebug(ctx context.Context) bool {
 	callerID := callerid.ImmediateCallerIDFromContext(ctx)
-	if cp.appDebugParams.Uname == "" {
+	if cp.appDebugParams == nil || cp.appDebugParams.Uname == "" {
 		return false
 	}
 	return callerID != nil && callerID.Username == cp.appDebugParams.Uname
