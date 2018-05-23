@@ -113,7 +113,7 @@ func forceEOF(yylex interface{}) {
 
 %token LEX_ERROR
 %left <bytes> UNION
-%token <bytes> SELECT STREAM INSERT UPDATE DELETE FROM WHERE GROUP HAVING ORDER BY LIMIT OFFSET FOR
+%token <bytes> SELECT STREAM INSERT UPDATE DELETE FROM WHERE GROUP HAVING ORDER BY LIMIT OFFSET FOR DO
 %token <bytes> ALL DISTINCT AS EXISTS ASC DESC INTO DUPLICATE KEY DEFAULT SET LOCK KEYS
 %token <bytes> VALUES LAST_INSERT_ID
 %token <bytes> NEXT VALUE SHARE MODE
@@ -325,6 +325,7 @@ command:
 | begin_statement
 | commit_statement
 | rollback_statement
+| do_statement
 | other_statement
 
 select_statement:
@@ -1405,6 +1406,12 @@ rollback_statement:
   ROLLBACK
   {
     $$ = &Rollback{}
+  }
+
+do_statement:
+  DO select_expression_list
+  {
+    $$ = &SelectExprs{Nextval{Expr: $5}}
   }
 
 other_statement:
@@ -2919,6 +2926,7 @@ non_reserved_keyword:
 | DATE
 | DATETIME
 | DECIMAL
+| DO
 | DOUBLE
 | DUPLICATE
 | ENUM
